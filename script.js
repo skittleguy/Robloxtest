@@ -8,7 +8,7 @@ let jsonData = null;
 // GitHub config
 const FILE_PATH = "pixels.json";
 const BRANCH = "main";
-const TOKEN = "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"; // your token
+const TOKEN = "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"; // your token
 
 let latestSha = null; // to store current SHA
 
@@ -100,3 +100,4 @@ submitBtn.addEventListener("click", async () => {
         alert("Error sending JSON to GitHub");
     }
 });
+
