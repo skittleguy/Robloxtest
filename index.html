@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roblox Pixel Converter with Alpha</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Roblox Pixel Converter with Alpha</h1>
+    <input type="file" id="imageInput" accept="image/*">
+    <br><br>
+    <canvas id="canvas" style="display:none;"></canvas>
+    <div>
+        <h3>Preview:</h3>
+        <img id="preview" width="200" height="200">
+    </div>
+    <div>
+        <h3>JSON Output:</h3>
+        <textarea id="jsonOutput" rows="20" cols="60"></textarea>
+    </div>
+    <button id="downloadBtn">Download JSON</button>
+
+    <script src="script.js"></script>
+</body>
+</html>
