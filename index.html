@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roblox Pixel Converter (Custom Size)</title>
+    <title>Roblox Pixel Converter (Auto Size)</title>
 </head>
 <body>
-    <h1>Roblox Pixel Converter (Custom Size)</h1>
+    <h1>Roblox Pixel Converter (Auto Size)</h1>
     <input type="file" id="imageInput" accept="image/*"><br><br>
 
     <label for="widthInput">Width:</label>
-    <input type="number" id="widthInput" value="100" min="1"><br><br>
+    <input type="number" id="widthInput" min="1"><br><br>
 
     <label for="heightInput">Height:</label>
-    <input type="number" id="heightInput" value="100" min="1"><br><br>
+    <input type="number" id="heightInput" min="1"><br><br>
 
     <canvas id="canvas" style="display:none;"></canvas>
     <div>
@@ -24,7 +24,7 @@
         <h3>JSON Output:</h3>
         <textarea id="jsonOutput" rows="20" cols="60"></textarea>
     </div>
-    <button id="downloadBtn">Download JSON</button>
+    <button id="copyBtn">Copy JSON</button>
 
     <script src="script.js"></script>
 </body>
