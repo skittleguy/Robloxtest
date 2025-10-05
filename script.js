@@ -66,15 +66,17 @@ document.addEventListener("DOMContentLoaded", () => {
         reader.readAsDataURL(file);
     });
 
-    copyBtn.addEventListener("click", () => {
+    copyBtn.addEventListener("click", async () => {
         if (!output.value) {
             alert("Nothing to copy! Generate JSON first.");
             return;
         }
-        navigator.clipboard.writeText(output.value).then(() => {
+
+        try {
+            await navigator.clipboard.writeText(output.value);
             alert("JSON copied to clipboard!");
-        }).catch(() => {
-            alert("Failed to copy JSON.");
-        });
+        } catch (err) {
+            alert("Failed to copy JSON. Make sure your browser supports clipboard API.");
+        }
     });
 });
