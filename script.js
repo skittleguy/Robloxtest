@@ -1,6 +1,8 @@
 document.getElementById("convertBtn").addEventListener("click", () => {
     const fileInput = document.getElementById("imageInput");
     const output = document.getElementById("jsonOutput");
+    const resizeWidth = parseInt(document.getElementById("resizeWidth").value);
+    const resizeHeight = parseInt(document.getElementById("resizeHeight").value);
 
     if (!fileInput.files[0]) {
         alert("Please select an image first!");
@@ -16,15 +18,18 @@ document.getElementById("convertBtn").addEventListener("click", () => {
 
         img.onload = function() {
             const canvas = document.createElement("canvas");
-            canvas.width = img.width;
-            canvas.height = img.height;
+            const targetWidth = resizeWidth || img.width;
+            const targetHeight = resizeHeight || img.height;
+            canvas.width = targetWidth;
+            canvas.height = targetHeight;
             const ctx = canvas.getContext("2d");
-            ctx.drawImage(img, 0, 0);
 
-            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+            // Draw the image resized
+            ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
+
+            const imageData = ctx.getImageData(0, 0, targetWidth, targetHeight).data;
             const pixels = [];
 
-            // Flatten pixels row by row
             for (let i = 0; i < imageData.length; i += 4) {
                 const r = imageData[i];
                 const g = imageData[i + 1];
@@ -34,12 +39,16 @@ document.getElementById("convertBtn").addEventListener("click", () => {
             }
 
             const json = {
-                width: img.width,
-                height: img.height,
+                width: targetWidth,
+                height: targetHeight,
                 pixels: pixels
             };
 
-            output.value = JSON.stringify(json, null, 2); // Pretty print JSON
+            output.value = JSON.stringify(json, null, 2);
+        };
+
+        img.onerror = function() {
+            alert("Failed to load image. Please try a different file.");
         };
     };
 
