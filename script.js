@@ -1,4 +1,6 @@
 const imageInput = document.getElementById("imageInput");
+const widthInput = document.getElementById("widthInput");
+const heightInput = document.getElementById("heightInput");
 const canvas = document.getElementById("canvas");
 const preview = document.getElementById("preview");
 const jsonOutput = document.getElementById("jsonOutput");
@@ -12,15 +14,18 @@ imageInput.addEventListener("change", (event) => {
     reader.onload = function(e) {
         const img = new Image();
         img.onload = function() {
-            const size = 100; // scale all images to 100x100
-            canvas.width = size;
-            canvas.height = size;
+            // Get custom size from user input
+            const sizeX = parseInt(widthInput.value) || img.width;
+            const sizeY = parseInt(heightInput.value) || img.height;
+
+            canvas.width = sizeX;
+            canvas.height = sizeY;
             const ctx = canvas.getContext("2d");
-            ctx.drawImage(img, 0, 0, size, size);
+            ctx.drawImage(img, 0, 0, sizeX, sizeY);
 
             preview.src = canvas.toDataURL();
 
-            const imageData = ctx.getImageData(0, 0, size, size).data;
+            const imageData = ctx.getImageData(0, 0, sizeX, sizeY).data;
             const pixels = [];
 
             // Extract pixels including alpha
@@ -28,13 +33,13 @@ imageInput.addEventListener("change", (event) => {
                 const r = imageData[i];
                 const g = imageData[i + 1];
                 const b = imageData[i + 2];
-                const a = imageData[i + 3]; // transparency
+                const a = imageData[i + 3];
                 pixels.push([r, g, b, a]);
             }
 
             const json = {
-                width: size,
-                height: size,
+                width: sizeX,
+                height: sizeY,
                 pixels: pixels
             };
 
