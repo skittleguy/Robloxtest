@@ -1,26 +1,8 @@
 const imageInput = document.getElementById("imageInput");
 const canvas = document.getElementById("canvas");
 const preview = document.getElementById("preview");
-const submitBtn = document.getElementById("submitBtn");
-
-let jsonData = null;
-
-// GitHub config
-const FILE_PATH = "pixels.json";
-const BRANCH = "main";
-const TOKEN = "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"; // your token
-
-let latestSha = null; // to store current SHA
-
-// Fetch current SHA of pixels.json
-async function fetchFileSha() {
-    const url = "https://api.github.com/repos/skittleguy/Robloxtest/contents/pixels.json?ref=main";
-    const res = await fetch(url, {
-        headers: { "Authorization": `token ${TOKEN}` }
-    });
-    const data = await res.json();
-    latestSha = data.sha;
-}
+const jsonOutput = document.getElementById("jsonOutput");
+const downloadBtn = document.getElementById("downloadBtn");
 
 imageInput.addEventListener("change", (event) => {
     const file = event.target.files[0];
@@ -30,7 +12,7 @@ imageInput.addEventListener("change", (event) => {
     reader.onload = function(e) {
         const img = new Image();
         img.onload = function() {
-            const size = 100;
+            const size = 100; // scale all images to 100x100
             canvas.width = size;
             canvas.height = size;
             const ctx = canvas.getContext("2d");
@@ -41,63 +23,34 @@ imageInput.addEventListener("change", (event) => {
             const imageData = ctx.getImageData(0, 0, size, size).data;
             const pixels = [];
 
+            // Extract pixels including alpha
             for (let i = 0; i < imageData.length; i += 4) {
                 const r = imageData[i];
                 const g = imageData[i + 1];
                 const b = imageData[i + 2];
-                const a = imageData[i + 3];
+                const a = imageData[i + 3]; // transparency
                 pixels.push([r, g, b, a]);
             }
 
-            jsonData = {
+            const json = {
                 width: size,
                 height: size,
                 pixels: pixels
             };
+
+            jsonOutput.value = JSON.stringify(json, null, 2);
         };
         img.src = e.target.result;
     };
     reader.readAsDataURL(file);
 });
 
-submitBtn.addEventListener("click", async () => {
-    if (!jsonData) return alert("No image selected!");
-
-    try {
-        // Fetch latest SHA
-        await fetchFileSha();
-
-        // Encode JSON to base64
-        const content = btoa(unescape(encodeURIComponent(JSON.stringify(jsonData, null, 2))));
-
-        const url = "https://api.github.com/repos/skittleguy/Robloxtest/contents/pixels.json";
-
-        const body = {
-            message: "Update pixels.json via website",
-            content: content,
-            sha: latestSha,
-            branch: BRANCH
-        };
-
-        const res = await fetch(url, {
-            method: "PUT",
-            headers: {
-                "Authorization": `token ${TOKEN}`,
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(body)
-        });
-
-        const data = await res.json();
-        if (data.content) {
-            alert("pixels.json updated successfully! Roblox will fetch the new image.");
-        } else {
-            console.error(data);
-            alert("Failed to update pixels.json. Check console.");
-        }
-    } catch (err) {
-        console.error(err);
-        alert("Error sending JSON to GitHub");
-    }
+downloadBtn.addEventListener("click", () => {
+    const blob = new Blob([jsonOutput.value], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "pixels.json";
+    a.click();
+    URL.revokeObjectURL(url);
 });
-
