@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const fileInput = document.getElementById("imageInput");
     const output = document.getElementById("jsonOutput");
     const convertBtn = document.getElementById("convertBtn");
+    const copyBtn = document.getElementById("copyBtn");
     const resizeWidthInput = document.getElementById("resizeWidth");
     const resizeHeightInput = document.getElementById("resizeHeight");
     const previewCanvas = document.getElementById("preview");
@@ -63,5 +64,17 @@ document.addEventListener("DOMContentLoaded", () => {
         };
 
         reader.readAsDataURL(file);
+    });
+
+    copyBtn.addEventListener("click", () => {
+        if (!output.value) {
+            alert("Nothing to copy! Generate JSON first.");
+            return;
+        }
+        navigator.clipboard.writeText(output.value).then(() => {
+            alert("JSON copied to clipboard!");
+        }).catch(() => {
+            alert("Failed to copy JSON.");
+        });
     });
 });
